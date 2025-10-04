@@ -3,17 +3,40 @@ import { ref, shallowRef } from "vue"
 import Button from "@/components/Button.vue"
 import { useLocalStorage } from "./composables/useLocalStorage"
 
+/**
+ * Data berasal dari localStorage. Sehingga data tetap tersimpan
+ * secara persisten meski aplikasi dimatikan atau browser ditutup.
+ */
 const data = useLocalStorage("todolist-data", [
    { id: 1, title: "Task awal", status: false },
    { id: 2, title: "Task awal yang selesai", status: true },
 ])
 
+/**
+ * Menghapus satu item dari `data`
+ */
+function onRemoveItem(index: number) {
+   data.value.splice(index, 1)
+}
+
+/**
+ * State untuk menampilkan/menyembunyikan form
+ */
 const isFormOpen = shallowRef(false)
+
+/**
+ * Form state
+ */
 const form = ref({
    title: "",
    status: false,
 })
 
+/**
+ * Simpan informasi yang di input dari form
+ * ke dalam state `data`.
+ * Setelah itu reset dan tutup form
+ */
 function onSaveForm() {
    data.value.push({
       id: data.value.length + 1,
@@ -23,6 +46,9 @@ function onSaveForm() {
    onCloseForm()
 }
 
+/**
+ * Menutup/sembunyikan form dan reset form ke state awal
+ */
 function onCloseForm() {
    form.value = {
       title: "",
@@ -30,10 +56,6 @@ function onCloseForm() {
    }
 
    isFormOpen.value = false
-}
-
-function onRemoveItem(index: number) {
-   data.value.splice(index, 1)
 }
 </script>
 
